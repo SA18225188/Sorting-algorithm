@@ -1,1 +1,40 @@
+/*
+计数排序的基本思想是：对每一个输入元素x，确定小于x的元素个数。利用这一信息，就可以直接把x放到它在输出数组中的位置上了。例如，如果有17个元素小于x，则将x放在第18个位置即可。但是当存在几个元素相同时，会稍许不同，否则中间会漏掉元素。
 
+在计数排序算法中，假设输入是一个数组A[1..n]，A.length = n。另外数组B[1...n]存放排序的输出，C[0...k]提供临时的存储空间：
+*/
+#include <iostream>
+using namespace std;
+int CountSort(int A[], int B[], int n){
+	int *C=new int[n];
+	for (int i=0; i<n; i++){ 
+		C[i]=0;//数组初始化 
+	}	
+	for (int j=0; j<n; j++ ){
+		C[A[j]]=C[A[j]]+1;
+	} 
+	for (int i=1; i<n; i++){
+		C[i]=C[i]+C[i-1];//这里的i可以加max函数优化，在这里就不优化了 
+	}
+	for(int j=n-1; j>=0; j--){//从后向前是为了保证稳定性 ，注意下标 
+		B[C[A[j]]-1]=A[j];//注意细节，注意下标 
+		C[A[j]]=C[A[j]]-1;
+	} 
+	delete[] C;
+	return 0; 
+} 
+
+int main(){
+	int A[]={2, 5, 3, 0, 2, 3, 0, 3};
+	int length=sizeof(A)/sizeof(int);
+	int *B=new int[length];	
+	for (int i=0; i<length; i++){
+		B[i]=0;//存放数组初始化 
+ 	}
+	CountSort(A, B, length);
+	for(int i=0; i<length; i++){
+		cout<<B[i]<<"  "; 
+	} 
+	delete[] B; 
+	return 0;	
+}
