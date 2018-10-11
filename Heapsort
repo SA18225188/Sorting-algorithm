@@ -1,0 +1,62 @@
+/*
+最坏情况下时间复杂度为nlogn。堆排序为不稳定排序，不适合记录较少的排序。
+
+写代码时候注意数组，注意下标，很容易弄错 ，结合具体例子写不容易出错 
+*/ 
+#include <iostream>
+using namespace std;
+
+void exchange(int &a, int &b){
+	int c;
+	c = a;
+	a = b;
+	b = c;
+}
+
+void KeepMaxHeap(int A[], int length, int i){//维护堆的性质 ，i都当初数组下标考虑 
+	int left=i*2 +1;//length可以理解为最后节点下标，因为是0开始，所以结束于length-1 
+	int right = left+1;
+	int largest = i;
+	if (left <= length && A[left] > A[largest]){
+		largest = left;
+	} 
+	if (right <= length && A[right] > A[largest]){
+		largest = right;
+	}
+	if(largest != i){
+		exchange(A[largest], A[i]);
+		KeepMaxHeap(A, length, largest);
+	}
+}
+
+void BuildMaxHeap(int A[], int length){//建堆 
+	for (int i = (length-1)/2; i >= 0; i--){//这里结合算法导论注意下标 
+		KeepMaxHeap(A, length, i);
+	}
+}
+
+void HeapSort(int A[], int length){
+	BuildMaxHeap(A, length);
+    
+	for (int i = length; i>=1;){
+		exchange (A[0], A[i]);
+		i--;//堆的大小不断减小，起到排列好的数据隔离出来的作用 
+		KeepMaxHeap(A, i, 0);//注意是i，而非length 
+	}
+} 
+
+int main()
+{
+	int A[] = {4, 1, 3, 2, 16, 9, 10, 14, 8, 7};
+	int length = sizeof(A)/sizeof(int); 
+	cout<<"排序之前：";  
+    for(int i = 0; i < length; i++)
+        cout<<A[i]<<"  ";
+    cout<<endl;
+	HeapSort(A,length-1);
+	cout<<"排序结果：";  
+    for(int i = 0; i < length; i++)
+        cout<<A[i]<<"  ";
+    cout<<endl;
+    return 0; 	
+}
